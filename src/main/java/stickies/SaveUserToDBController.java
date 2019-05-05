@@ -46,9 +46,9 @@ public class SaveUserToDBController
 	}
 	private boolean saveUser(User user) throws SQLException
 	{
-		String query = "Insert into users (userid, username, password, firstname, lastname, email, phone) values(?,?,?,?,?,?,?)";
+		String query = "Insert into users (username, password, firstname, lastname, email, phone) values(?,?,?,?,?,?)";
 		log.info(""+jdbcTemplate);
-		int count =jdbcTemplate.update(query, user.getUserID(), user.getUsername(), user.getPassword(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoneNum());
+		int count =jdbcTemplate.update(query, user.getUsername(), user.getPassword(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoneNum());
 		
 		//check that result set affected rows- was successful
 		

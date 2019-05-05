@@ -4,9 +4,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,14 +27,16 @@ import org.slf4j.LoggerFactory;
 @CrossOrigin
 public class LoginController {
 
+	private static final ConcurrentMap<String,String> sessions = new ConcurrentHashMap<String,String>();
+	
 	private static final Logger log = LoggerFactory.getLogger(Application.class);
 	@Autowired
 	Environment env;
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
-	@RequestMapping(path="/login", method =RequestMethod.POST)
-	public int login(@RequestBody LoginRequest loginRequest)
+	@RequestMapping(path="/login")
+	public void login(@RequestBody LoginRequest loginRequest, HttpServletResponse response)
 	{
 
 			String query = "select password from users where username= ?";
@@ -35,16 +45,16 @@ public class LoginController {
 			if(passwords.size()>0)
 			{
 				if(passwords.get(0).equals(loginRequest.password))
-					return 0; //was successful
+				{
+					UUID sessionId = UUID.randomUUID();
+					sessions.put(sessionId.toString(),loginRequest.username);
+					response.addCookie(new Cookie("sessionId", sessionId.toString()));
+					response.setStatus(HttpStatus.OK.value()); //200
+				}
 				else
-					return 2; //password didnt match
+					response.setStatus(HttpStatus.UNAUTHORIZED.value());; //password didnt match error: 401
 			}
-			else {
-				//username didnt exist
-				return 1; //code means that username was not found in the database
-			}
-		
-
+	
 	}
 	
 	static class LoginRequest{
