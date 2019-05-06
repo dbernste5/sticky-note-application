@@ -4,8 +4,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.SQLException;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +28,7 @@ public class SaveUserToDBController
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 	@RequestMapping(path="/user", method =RequestMethod.POST)
-	public void getUser(@RequestBody User newUser)
+	public void getUser(@RequestBody User newUser, HttpServletResponse response)
 	{
 		
 		try
@@ -33,9 +36,11 @@ public class SaveUserToDBController
 			if(saveUser(newUser))
 			{
 				log.info("User saved to DB successfully");
+				response.setStatus(HttpStatus.OK.value()); //200
 			}
 			else {
 				log.info("Unsuccessful...");
+				response.setStatus(HttpStatus.UNAUTHORIZED.value());
 			}
 		}
 		catch(SQLException e)

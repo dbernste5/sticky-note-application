@@ -52,8 +52,10 @@ public class LoginController {
 					response.setStatus(HttpStatus.OK.value()); //200
 				}
 				else
-					response.setStatus(HttpStatus.UNAUTHORIZED.value());; //password didnt match error: 401
+					response.setStatus(HttpStatus.UNAUTHORIZED.value()); //password didnt match error: 401
 			}
+			else
+				response.setStatus(HttpStatus.UNAUTHORIZED.value()); //no passwords returned for username entered (user is not in our system)error: 401
 	
 	}
 	
