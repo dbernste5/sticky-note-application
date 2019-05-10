@@ -48,7 +48,11 @@ public class LoginController {
 				{
 					UUID sessionId = UUID.randomUUID();
 					sessions.put(sessionId.toString(),loginRequest.username);
-					response.addCookie(new Cookie("sessionId", sessionId.toString()));
+					Cookie sessionCookie = new Cookie("sessionId", sessionId.toString());
+					Cookie usernameCookie = new Cookie("userName", loginRequest.username);
+					response.addCookie(sessionCookie);
+					response.addCookie(usernameCookie);
+					
 					response.setStatus(HttpStatus.OK.value()); //200
 				}
 				else
@@ -57,6 +61,20 @@ public class LoginController {
 			else
 				response.setStatus(HttpStatus.UNAUTHORIZED.value()); //no passwords returned for username entered (user is not in our system)error: 401
 	
+	}
+	
+	@RequestMapping(path="/logout")
+	public void login(HttpServletResponse response)
+	{
+		
+		Cookie sessionCookie = new Cookie("sessionId", null);
+		sessionCookie.setMaxAge(0);
+		response.addCookie(sessionCookie);
+		
+		Cookie userCookie = new Cookie("userName", null);
+		userCookie.setMaxAge(0);
+		response.addCookie(userCookie);
+		
 	}
 	
 	static class LoginRequest{

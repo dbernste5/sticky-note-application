@@ -3,6 +3,7 @@ package stickies;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,18 +34,24 @@ public class SaveUserToDBController
 		
 		try
 		{
-			if(saveUser(newUser))
+			if(!uniqueUsername(newUser.getUsername()))
+			{
+				log.info("duplicate username");
+				response.setStatus(HttpStatus.CONFLICT.value()); //409
+			}
+			else if(saveUser(newUser))
 			{
 				log.info("User saved to DB successfully");
 				response.setStatus(HttpStatus.OK.value()); //200
 			}
 			else {
 				log.info("Unsuccessful...");
-				response.setStatus(HttpStatus.UNAUTHORIZED.value());
+				response.setStatus(HttpStatus.UNAUTHORIZED.value()); //401
 			}
 		}
 		catch(SQLException e)
 		{
+			response.setStatus(HttpStatus.BAD_REQUEST.value()); //400
 			log.info(e.getMessage());
 		}
 		
@@ -58,6 +65,13 @@ public class SaveUserToDBController
 		//check that result set affected rows- was successful
 		
 		return count==1;
+	}
+	
+	private boolean uniqueUsername(String username)
+	{
+		String query = "Select username from users where username = ?";
+		List<String> usernames = jdbcTemplate.queryForList(query, String.class, username);
+		return !(usernames.size()>0);		
 	}
 	
 }
