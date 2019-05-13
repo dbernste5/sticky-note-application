@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class Sticky {
 	
-	private static int lastStickyID = 0; //will be auto-incremented, generate from file
+	//private static int lastStickyID = 0; //will be auto-incremented, generate from file
 	private int stickyID; 
 	private String title;
 	private String body;
@@ -44,16 +44,16 @@ public class Sticky {
 	public void setColor(String color) {
 		this.color = color;
 	}
-	public static int getLastStickyID() {
+	/*public static int getLastStickyID() {
 		return lastStickyID;
-	}
+	}*/
 	public int getStickyID() {
 		return stickyID;
 	}
 	public LocalDate getDateCreated() {
 		return dateCreated;
 	}
-		//reads the last customer ID from a file
+	/*	//reads the last customer ID from a file
 		public static void initializeCustomerID(String filename) throws FileNotFoundException
 		{
 			File file = new File(filename);
@@ -74,7 +74,7 @@ public class Sticky {
 			
 		}
 		
-		
+		*/
 	
 	
 	
