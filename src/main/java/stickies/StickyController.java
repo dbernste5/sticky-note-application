@@ -1,5 +1,6 @@
 package stickies;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
@@ -26,13 +27,16 @@ public class StickyController
 	JdbcTemplate jdbcTemplate;
 	
 	@RequestMapping(path="/addStickynote")
-	public void addSticky(@RequestBody BasicSticky sticky, HttpServletResponse response)
+	public void addSticky(@RequestBody BasicSticky sticky, HttpServletResponse response )
 	{
-		String query = "Insert into basicStickies (title, body) values(?,?)";
-		int count =jdbcTemplate.update(query, sticky.getTitle(), sticky.getBody());
+		String query = "Insert into basicStickies (userid, title, body) values(?,?,?)";
+		
+		int count =jdbcTemplate.update(query, sticky.getUserID(), sticky.getTitle(), sticky.getBody());
 		log.info("got from react" + sticky);
 		log.info("title: "+ sticky.getTitle());
 		log.info("body: "+ sticky.getTitle());
+		log.info("userid: "+ sticky.getUserID());
+		
 		if(count==1)
 		{
 			//success

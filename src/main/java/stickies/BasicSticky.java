@@ -4,12 +4,21 @@ public class BasicSticky
 {
 	private String title;
 	private String body;
+	private int userID;
 	
+
 	public BasicSticky()
 	{
 		
 	}
 	
+	public int getUserID() {
+		return userID;
+	}
+
+	public void setUserID(int userID) {
+		this.userID = userID;
+	}
 	public String getTitle()
 	{
 		return title;

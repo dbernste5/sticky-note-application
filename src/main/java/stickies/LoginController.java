@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,8 +36,9 @@ public class LoginController {
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
+	@ResponseBody
 	@RequestMapping(path="/login")
-	public void login(@RequestBody LoginRequest loginRequest, HttpServletResponse response)
+	public int login(@RequestBody LoginRequest loginRequest, HttpServletResponse response)
 	{
 
 			String query = "select password from users where username= ?";
@@ -54,17 +56,30 @@ public class LoginController {
 					response.addCookie(usernameCookie);
 					
 					response.setStatus(HttpStatus.OK.value()); //200
+					return getUserID(loginRequest.username);
 				}
 				else
 					response.setStatus(HttpStatus.UNAUTHORIZED.value()); //password didnt match error: 401
 			}
 			else
 				response.setStatus(HttpStatus.UNAUTHORIZED.value()); //no passwords returned for username entered (user is not in our system)error: 401
-	
+			return -1;
+			
 	}
 	
+	private int getUserID(String username) {
+		String query = "select UserID from users where Username =? ";
+		List<Integer> userids = jdbcTemplate.queryForList(query, Integer.class, username);
+		if(userids.size()>0)
+		{
+			return userids.get(0);
+		}
+		//should never happen
+		else return -1;
+	}
+
 	@RequestMapping(path="/logout")
-	public void login(HttpServletResponse response)
+	public void logout(HttpServletResponse response)
 	{
 		
 		Cookie sessionCookie = new Cookie("sessionId", null);
