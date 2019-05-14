@@ -31,7 +31,7 @@ public class StickyController
 	{
 		log.info("got from react " + sticky);
 		log.info("title: "+ sticky.getTitle());
-		log.info("body: "+ sticky.getTitle());
+		log.info("body: "+ sticky.getBody());
 		log.info("userid: "+ sticky.getUserID());
 		
 		String query = "Insert into basicStickies (userid, title, body) values(?,?,?)";
