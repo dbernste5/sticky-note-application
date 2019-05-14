@@ -29,13 +29,13 @@ public class StickyController
 	@RequestMapping(path="/addStickynote")
 	public void addSticky(@RequestBody BasicSticky sticky, HttpServletResponse response )
 	{
-		String query = "Insert into basicStickies (userid, title, body) values(?,?,?)";
-		
-		int count =jdbcTemplate.update(query, sticky.getUserID(), sticky.getTitle(), sticky.getBody());
-		log.info("got from react" + sticky);
+		log.info("got from react " + sticky);
 		log.info("title: "+ sticky.getTitle());
 		log.info("body: "+ sticky.getTitle());
 		log.info("userid: "+ sticky.getUserID());
+		
+		String query = "Insert into basicStickies (userid, title, body) values(?,?,?)";
+		int count =jdbcTemplate.update(query, sticky.getUserID(), sticky.getTitle(), sticky.getBody());
 		
 		if(count==1)
 		{
