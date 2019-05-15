@@ -1,5 +1,8 @@
 package stickies;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,6 +15,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -46,6 +50,30 @@ public class StickyController
 		{
 			//didnt work...
 			response.setStatus(HttpStatus.BAD_REQUEST.value());	//400
+		}
+	}
+	
+	@ResponseBody
+	@RequestMapping (path="/userStickies")
+	public List<Map<String, Object>> getAllStickies(@RequestBody int userID, HttpServletResponse response)
+	{
+		/*
+		 * @Override
+    	public Map<String, Object> getCoupleColumnsById(long id) {
+        	return (Map<String, Object>)queryForMap(FOR_MAP, new Object[] {id});
+    	}
+		 */
+		
+		String query = "SELECT Title, Body from basicStickies where UserID=? order by StickyId";
+		List<Map<String, Object>> stickies  = jdbcTemplate.queryForList(query, userID);
+		if(stickies.size()>0)
+		{
+			response.setStatus(HttpStatus.OK.value()); //200
+			return stickies;
+		}
+		else {
+			response.setStatus(HttpStatus.NO_CONTENT.value()); //204
+			return null;
 		}
 	}
 
