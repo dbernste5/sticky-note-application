@@ -57,15 +57,9 @@ public class StickyController
 	@RequestMapping (path="/userStickies")
 	public List<Map<String, Object>> getAllStickies(@RequestBody int userID, HttpServletResponse response)
 	{
-		/*
-		 * @Override
-    	public Map<String, Object> getCoupleColumnsById(long id) {
-        	return (Map<String, Object>)queryForMap(FOR_MAP, new Object[] {id});
-    	}
-		 */
-		
 		String query = "SELECT Title, Body from basicStickies where UserID=? order by StickyId";
 		List<Map<String, Object>> stickies  = jdbcTemplate.queryForList(query, userID);
+		
 		if(stickies.size()>0)
 		{
 			response.setStatus(HttpStatus.OK.value()); //200
