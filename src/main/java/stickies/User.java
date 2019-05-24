@@ -5,9 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-public class User
-{
-	//instance variables
+public class User {
+	// instance variables
 
 	private String username;
 	private String password;
@@ -15,22 +14,20 @@ public class User
 	private String lastName;
 	private String email;
 	private String phone;
-		
-	//constructor
-	public User(String username, String password, String firstname, String lastname, String email, String phone )
-	{
-		//validate username, password, email? just in GUI?
-				
-		this.username=username;
-		this.password=password;
-		this.firstName=firstname;
-		this.lastName=lastname;
-		this.email=email;
-		this.phone=phone;
+
+	// constructor
+	public User(String username, String password, String firstname, String lastname, String email, String phone) {
+		// validate username, password, email? just in GUI?
+
+		this.username = username;
+		this.password = password;
+		this.firstName = firstname;
+		this.lastName = lastname;
+		this.email = email;
+		this.phone = phone;
 	}
-	
-	public User()
-	{
+
+	public User() {
 	}
 
 	public String getPhone() {
@@ -40,8 +37,6 @@ public class User
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-
-
 
 	public void setUsername(String username) {
 		this.username = username;
@@ -63,47 +58,39 @@ public class User
 		this.email = email;
 	}
 
-	//overload, phone is optional
-	public User(String username, String password, String firstname, String lastname, String email )
-	{
-		this(username,  password,firstname, lastname, email, null);
+	// overload, phone is optional
+	public User(String username, String password, String firstname, String lastname, String email) {
+		this(username, password, firstname, lastname, email, null);
 	}
 
-	public boolean validateEmail(String email)
-	{
+	public boolean validateEmail(String email) {
 		String emailValidator = "^[a-zA-Z0-9_+&*-] + (?:\\.[a-zA-Z0-9_+&*-]+ )*@(?:[a-zA-Z0-9-]+\\.) + [a-zA-Z]{2, 7}$";
 		return email.matches(emailValidator);
 	}
-	
-	//getters
-	public String getUsername()
-	{
+
+	// getters
+	public String getUsername() {
 		return username;
 	}
-	
-	public String getPassword()
-	{
+
+	public String getPassword() {
 		return password;
 	}
-	
-	public String getFirstName()
-	{
+
+	public String getFirstName() {
 		return firstName;
 	}
-	
-	public String getLastName()
-	{
+
+	public String getLastName() {
 		return lastName;
 	}
-	
-	public String getPhoneNum()
-	{
+
+	public String getPhoneNum() {
 		return phone;
 	}
-	
-	public String getEmail()
-	{
+
+	public String getEmail() {
 		return email;
 	}
-	
+
 }
