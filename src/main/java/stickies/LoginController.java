@@ -10,9 +10,12 @@ import java.util.concurrent.ConcurrentMap;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +28,7 @@ public class LoginController {
 
 	//making the sessions map protected so the other controllers can access it as well to verify the user that is logged in
 	protected static final ConcurrentMap<String, Integer> sessions = new ConcurrentHashMap<String, Integer>();
-
+	private static final Logger log = LoggerFactory.getLogger(Application.class);
 	@Autowired
 	Environment env;
 
@@ -81,6 +84,22 @@ public class LoginController {
 		userCookie.setMaxAge(0);
 		response.addCookie(userCookie);
 
+	}
+	
+	
+	@RequestMapping(path = "/validUser")
+	public void checkIfUserLoggedIn(HttpServletResponse response, @CookieValue("sessionId") String sessionId) {
+		if(sessions.get(sessionId)!= null) {
+			//user is logged in
+			response.setStatus(HttpStatus.OK.value());
+		}
+		else {
+			//the sessionID cookie that the user has is not from us- user is not logged in to our site
+			response.setStatus(HttpStatus.I_AM_A_TEAPOT.value()); //just for fun :)
+			
+		}
+		
+		log.info("response status set to: "+ response.getStatus());
 	}
 
 	static class LoginRequest {
