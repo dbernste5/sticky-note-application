@@ -3,7 +3,6 @@ package stickies;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
@@ -12,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,15 +29,15 @@ public class StickyController {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
-	@RequestMapping(path = "/addStickynote")
-	public void addSticky(@RequestBody BasicSticky sticky, HttpServletResponse response) {
+	@RequestMapping(path = "/stickynote")
+	public void addSticky(@RequestBody BasicSticky sticky, HttpServletResponse response, @CookieValue("sessionId") String sessionId) {
 		log.info("got from react " + sticky);
 		log.info("title: " + sticky.getTitle());
 		log.info("body: " + sticky.getBody());
-		log.info("userid: " + sticky.getUserID());
-
+		int userID = LoginController.sessions.get(sessionId);
+		
 		String query = "Insert into basicStickies (userid, title, body) values(?,?,?)";
-		int count = jdbcTemplate.update(query, sticky.getUserID(), sticky.getTitle(), sticky.getBody());
+		int count = jdbcTemplate.update(query, userID, sticky.getTitle(), sticky.getBody());
 
 		if (count == 1) {
 			// success
@@ -50,7 +50,8 @@ public class StickyController {
 
 	@ResponseBody
 	@RequestMapping(path = "/userStickies")
-	public List<Map<String, Object>> getAllStickies(@RequestBody int userID, HttpServletResponse response) {
+	public List<Map<String, Object>> getAllStickies(@CookieValue("sessionId") String sessionId, HttpServletResponse response) {
+		int userID = LoginController.sessions.get(sessionId);
 		String query = "SELECT Title, Body from basicStickies where UserID=? order by StickyId";
 		List<Map<String, Object>> stickies = jdbcTemplate.queryForList(query, userID);
 

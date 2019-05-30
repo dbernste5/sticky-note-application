@@ -1,13 +1,7 @@
 package stickies;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.util.Scanner;
-
 public class User {
 	// instance variables
-
 	private String username;
 	private String password;
 	private String firstName;
@@ -17,8 +11,6 @@ public class User {
 
 	// constructor
 	public User(String username, String password, String firstname, String lastname, String email, String phone) {
-		// validate username, password, email? just in GUI?
-
 		this.username = username;
 		this.password = password;
 		this.firstName = firstname;
@@ -28,12 +20,10 @@ public class User {
 	}
 
 	public User() {
+		
 	}
 
-	public String getPhone() {
-		return phone;
-	}
-
+	//setters
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
@@ -58,16 +48,6 @@ public class User {
 		this.email = email;
 	}
 
-	// overload, phone is optional
-	public User(String username, String password, String firstname, String lastname, String email) {
-		this(username, password, firstname, lastname, email, null);
-	}
-
-	public boolean validateEmail(String email) {
-		String emailValidator = "^[a-zA-Z0-9_+&*-] + (?:\\.[a-zA-Z0-9_+&*-]+ )*@(?:[a-zA-Z0-9-]+\\.) + [a-zA-Z]{2, 7}$";
-		return email.matches(emailValidator);
-	}
-
 	// getters
 	public String getUsername() {
 		return username;
@@ -88,7 +68,7 @@ public class User {
 	public String getPhoneNum() {
 		return phone;
 	}
-
+	
 	public String getEmail() {
 		return email;
 	}
