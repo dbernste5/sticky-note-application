@@ -53,7 +53,7 @@ public class StickyController {
 
 	@ResponseBody
 	@RequestMapping(path = "/deleteStickies", method = RequestMethod.POST)
-	public void deleteStickies(@RequestParam List<String> stickies, HttpServletResponse response) {
+	public void deleteStickies(@RequestBody List<String> stickies, HttpServletResponse response) {
 		int count=-1;
 		log.info("stickies to delete in spring: "+stickies);
 		for(String sticky : stickies) {
