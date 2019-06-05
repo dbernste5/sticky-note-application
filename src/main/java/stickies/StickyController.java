@@ -1,6 +1,5 @@
 package stickies;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,9 +32,6 @@ public class StickyController {
 
 	@RequestMapping(path = "/stickynote")
 	public void addSticky(@RequestBody BasicSticky sticky, HttpServletResponse response, @CookieValue("sessionId") String sessionId) {
-		log.info("got from react " + sticky);
-		log.info("title: " + sticky.getTitle());
-		log.info("body: " + sticky.getBody());
 		int userID = LoginController.sessions.get(sessionId);
 		
 		String query = "Insert into basicStickies (userid, title, body) values(?,?,?)";
@@ -51,16 +46,15 @@ public class StickyController {
 		}
 	}
 
-	@ResponseBody
+	
 	@RequestMapping(path = "/deleteStickies", method = RequestMethod.POST)
 	public void deleteStickies(@RequestBody List<String> stickies, HttpServletResponse response) {
 		int count=-1;
-		log.info("stickies to delete in spring: "+stickies);
 		for(String sticky : stickies) {
 				String query = "delete from basicStickies where StickyId=?";
 				count=jdbcTemplate.update(query, sticky);
 		}
-		log.info("in delete stickies: count= "+count);
+		
 		if(count==-1) {
 			//stickies is null
 			response.setStatus(HttpStatus.UNAUTHORIZED.value()); // 401
@@ -69,6 +63,18 @@ public class StickyController {
 			response.setStatus(HttpStatus.OK.value()); // 200
 		}
 	}
+	
+	
+	@RequestMapping(path= "/editStickies", method = RequestMethod.POST)
+	public void editStickies(@RequestBody List<StickyInfo> newInfo, HttpServletResponse response) {
+		for(StickyInfo s : newInfo) {
+			String query = "update basicStickies set body = ? where StickyId = ?";
+			jdbcTemplate.update(query, s.text, s.id);
+		}
+		
+		response.setStatus(HttpStatus.OK.value());
+	}
+	
 	
 	@ResponseBody
 	@RequestMapping(path = "/userStickies")
@@ -86,4 +92,19 @@ public class StickyController {
 		}
 	}
 
+	
+	
+	static class StickyInfo {
+		String id;
+		String text;
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public void setText(String text) {
+			this.text = text;
+		}
+
+	}
 }
